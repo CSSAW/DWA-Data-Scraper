@@ -4,7 +4,7 @@ import urllib
 import pickle
 
 
-def documentDownloader(urlString, alwaysDownload=False, storeData=True,  dataPath="raw_data/"):
+def documentDownloader(urlString, alwaysDownload=False, storeData=False,  dataPath="raw_data/"):
     # Returns the soup for a particular document. It will also store the file in the /raw_data directory
     documentPath = dataPath + urlString.replace("/", "|")
     soup = None
