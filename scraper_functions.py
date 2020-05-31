@@ -5,11 +5,11 @@ import pickle
 import requests
 import sys
 
-#Necessary for using pickle with soup objects
+#Necessary for working with pickle and soup
 sys.setrecursionlimit(100000)
-def documentDownloader(urlString, alwaysDownload=False, storeData=False,  dataPath="raw_data/"):
+def documentDownloader(urlString, alwaysDownload=False, storeData=False,  dataPath="raw_data"):
     # Returns the soup for a particular document. It will also store the file in the /raw_data directory
-    documentPath = dataPath + urlString.replace("/", "|")
+    documentPath = os.path.join(dataPath,urlString.replace("/", "|"))
     soup = None
 
     if not os.path.exists(dataPath):
