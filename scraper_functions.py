@@ -35,9 +35,18 @@ def documentDownloader(urlString, alwaysDownload=False, storeData=False,  dataPa
     return soup
 
 def getStationData(stationInterfaceURL, alwaysDownload=False, storeData=False,  dataPath="raw_data"):
-    #Returns a Pandas dataframe with the data from the station
+    #Returns a dictionary with
+    # df:Pandas dataframe with the data from the station
+    # lattitude:the lattitude of the station
+    # longitude:The longitude of the station 
+    # station:The name of the station
+
     stationInferface = documentDownloader(stationInterfaceURL,alwaysDownload=alwaysDownload, storeData=storeData)
     baseURL = stationInterfaceURL[:stationInterfaceURL.rfind("/")+1]
+
+    lattitude = stationInferface.find(id="tbLat").get("value")
+    longitude = stationInferface.find(id="tbLong").get("value")
+    stationName = stationInferface.find(id="tbStation").get("value")
 
     # The construction of the URL below was created by analysing the output of a 
     stationDataURL = baseURL + "HyData.aspx?Station=" + stationInferface.find(id="tbStation").get("value") +stationInferface.find("input", {"name":"ctl05"}).get("value") \
@@ -56,4 +65,4 @@ def getStationData(stationInterfaceURL, alwaysDownload=False, storeData=False,  
     strBuffer = io.StringIO(stationDataStr)
     stationDataDf = pd.read_fwf(strBuffer)
     strBuffer.close()
-    return stationDataDf
+    return {"df": stationDataDf, "lat": lattitude, "long":longitude,"station":stationName}
