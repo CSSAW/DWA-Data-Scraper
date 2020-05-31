@@ -18,6 +18,8 @@ optional arguments:
                         The url to the list of the stations. Defaults to the
                         verified list for the Limpopo basin.
   --data_output_dir DATA_OUTPUT_DIR
+                        This is where the CSVs of data from each of the
+                        stations will go.
   --always_download     Will download webpages regardless if they are already
                         downloaded. This is akin to refreshing a page in a web
                         browser
