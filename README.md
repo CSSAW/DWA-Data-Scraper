@@ -3,7 +3,13 @@ Scrape hydrological data from the South African department of Water and Sanitati
 
 The source of the data can be found at this address, http://www.dwa.gov.za/Hydrology/Verified/hymain.aspx
 
-This project should first download the raw files from each of the stations and then convert them to CSVs for easier use.
+This project should first download the raw files from each of the stations and then convert them to CSVs for easier use. The CSVs will have a heading with a commented out json string containing some metadata.
+<br/>
+<br/>
+Example:
+<br/>
+#{'lat': '-22.49135', 'long': '29.98309', 'river': 'Sand River @ Dorothy'}
+
 
 ```
 usage: scraper.py [-h] [--station_list_url STATION_LIST_URL]
