@@ -40,6 +40,8 @@ def getStationData(stationInterfaceURL, alwaysDownload=False, storeData=False,  
     # lattitude:the lattitude of the station
     # longitude:The longitude of the station 
     # station:The name of the station
+    # river: the river that the station is on
+
     outputDict = {}
     stationInferface = documentDownloader(stationInterfaceURL,alwaysDownload=alwaysDownload, storeData=storeData)
     baseURL = stationInterfaceURL[:stationInterfaceURL.rfind("/")+1]
@@ -47,9 +49,6 @@ def getStationData(stationInterfaceURL, alwaysDownload=False, storeData=False,  
     outputDict["long"] = stationInferface.find(id="tbLong").get("value")
     outputDict["station"] = stationInferface.find(id="tbStation").get("value")
     outputDict["river"] = stationInferface.find(id="labPlace").get_text().strip();
-    # lattitude = stationInferface.find(id="tbLat").get("value")
-    # longitude = stationInferface.find(id="tbLong").get("value")
-    # stationName = stationInferface.find(id="tbStation").get("value")
 
     # The construction of the URL below was created by analysing the output of a form
     stationDataURLPrimary = baseURL + "HyData.aspx?Station=" + stationInferface.find(id="tbStation").get("value") +stationInferface.find("input", {"name":"ctl05"}).get("value") \
