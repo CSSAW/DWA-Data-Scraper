@@ -48,7 +48,7 @@ def getStationData(stationInterfaceURL, alwaysDownload=False, storeData=False,  
     outputDict["lat"] = stationInferface.find(id="tbLat").get("value")
     outputDict["long"] = stationInferface.find(id="tbLong").get("value")
     outputDict["station"] = stationInferface.find(id="tbStation").get("value")
-    outputDict["river"] = stationInferface.find(id="labPlace").get_text().strip();
+    outputDict["river"] = stationInferface.find(id="labPlace").get_text().strip()
 
     # The construction of the URL below was created by analysing the output of a form
     stationDataURLPrimary = baseURL + "HyData.aspx?Station=" + stationInferface.find(id="tbStation").get("value") +stationInferface.find("input", {"name":"ctl05"}).get("value") \
