@@ -45,7 +45,8 @@ def getStationData(stationInterfaceURL, alwaysDownload=False, storeData=False,  
     baseURL = stationInterfaceURL[:stationInterfaceURL.rfind("/")+1]
     outputDict["lat"] = stationInferface.find(id="tbLat").get("value")
     outputDict["long"] = stationInferface.find(id="tbLong").get("value")
-    outputDict["station"]=stationInferface.find(id="tbStation").get("value")
+    outputDict["station"] = stationInferface.find(id="tbStation").get("value")
+    outputDict["river"] = stationInferface.find(id="labPlace").get_text().strip();
     # lattitude = stationInferface.find(id="tbLat").get("value")
     # longitude = stationInferface.find(id="tbLong").get("value")
     # stationName = stationInferface.find(id="tbStation").get("value")

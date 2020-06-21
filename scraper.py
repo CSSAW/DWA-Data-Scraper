@@ -23,24 +23,23 @@ if not os.path.exists(args.data_output_dir):
     os.mkdir(args.data_output_dir)
 for stationLink in stationListLinks:
     stationData = scraper_functions.getStationData(baseURL+stationLink,alwaysDownload=args.always_download, storeData=args.store_web_data)
+    metaDataStr = "#" + (str)({"lat":stationData["lat"],"long":stationData["long"],"river":stationData["river"]}) + "\n"
     if type(stationData["dfPrimary"]) != type(None):
         csvPath = os.path.join(args.data_output_dir,stationData["station"]+"_PRIMARY.csv")
         stationData["dfPrimary"].to_csv(csvPath,sep=",")
-        metadataStr = "#" + (str)({"lat":stationData["lat"],"long":stationData["long"]}) + "\n"
         csvFile = open(csvPath, "r+")
         csvContent = csvFile.read()
         csvFile.seek(0)
-        csvFile.write(metadataStr)
+        csvFile.write(metaDataStr)
         csvFile.write(csvContent)
         csvFile.close()
 
     if type(stationData["dfFlow"]) != type(None):
         csvPath = os.path.join(args.data_output_dir,stationData["station"]+"_FLOW.csv")
         stationData["dfFlow"].to_csv(csvPath,sep=",")
-        metadataStr = "#" + (str)({"lat":stationData["lat"],"long":stationData["long"]}) + "\n"
         csvFile = open(csvPath, "r+")
         csvContent = csvFile.read()
         csvFile.seek(0)
-        csvFile.write(metadataStr)
+        csvFile.write(metaDataStr)
         csvFile.write(csvContent)
         csvFile.close()
