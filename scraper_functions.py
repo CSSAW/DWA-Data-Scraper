@@ -7,7 +7,7 @@ import sys
 import pandas as pd
 import io
 
-#Necessary for pickle on soup objects
+# Necessary for pickle on soup objects
 sys.setrecursionlimit(100000)
 def documentDownloader(urlString, alwaysDownload=False, storeData=False,  dataPath="raw_data"):
     # Returns the soup for a particular document. It will also store the file in the /raw_data directory
@@ -35,7 +35,7 @@ def documentDownloader(urlString, alwaysDownload=False, storeData=False,  dataPa
     return soup
 
 def getStationData(stationInterfaceURL, alwaysDownload=False, storeData=False,  dataPath="raw_data"):
-    #Returns a dictionary with
+    # Returns a dictionary with
     # df:Pandas dataframe with the data from the station
     # lattitude:the lattitude of the station
     # longitude:The longitude of the station 
@@ -94,4 +94,4 @@ def getStationData(stationInterfaceURL, alwaysDownload=False, storeData=False,  
     else:
         outputDict["dfFlow"] = None
 
-    return outputDict#{"dfPrimary": stationDataPrimaryDf, "dfFlow":stationDataFlowDf, "lat": lattitude, "long":longitude,"station":stationName}
+    return outputDict
