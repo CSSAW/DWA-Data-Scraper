@@ -2,7 +2,7 @@ import argparse
 import scraper_functions
 import pandas as pd
 import os
-
+import json
 
 parser = argparse.ArgumentParser(description="Scrape data from the South African department of water and sanitation.")
 parser.add_argument("--station_list_url", default="http://www.dwa.gov.za/Hydrology/Verified/HyStations.aspx?Region=A&StationType=rbRiver", help="The url to the list of the stations. Defaults to the verified list for the Limpopo basin.")
@@ -23,10 +23,10 @@ if not os.path.exists(args.data_output_dir):
     os.mkdir(args.data_output_dir)
 for stationLink in stationListLinks:
     stationData = scraper_functions.getStationData(baseURL+stationLink,alwaysDownload=args.always_download, storeData=args.store_web_data)
-    metaDataStr = "#" + (str)({"lat":stationData["lat"],"long":stationData["long"],"river":stationData["river"]}) + "\n"
+    metaDataStr = "#" + json.dumps({"lat":stationData["lat"],"long":stationData["long"],"river":stationData["river"]}) + "\n"
     if type(stationData["dfPrimary"]) != type(None):
         csvPath = os.path.join(args.data_output_dir,stationData["station"]+"_PRIMARY.csv")
-        stationData["dfPrimary"].to_csv(csvPath,sep=",")
+        stationData["dfPrimary"].to_csv(csvPath,sep=",",index=False)
         csvFile = open(csvPath, "r+")
         csvContent = csvFile.read()
         csvFile.seek(0)
@@ -36,7 +36,7 @@ for stationLink in stationListLinks:
 
     if type(stationData["dfFlow"]) != type(None):
         csvPath = os.path.join(args.data_output_dir,stationData["station"]+"_FLOW.csv")
-        stationData["dfFlow"].to_csv(csvPath,sep=",")
+        stationData["dfFlow"].to_csv(csvPath,sep=",", index = False)
         csvFile = open(csvPath, "r+")
         csvContent = csvFile.read()
         csvFile.seek(0)
