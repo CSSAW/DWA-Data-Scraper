@@ -22,7 +22,9 @@ for i in os.listdir("csv_output/"):
     # elif i.endswith("FLOW.csv"):
 
 primaryDf.to_csv("total_primary.csv", index=False)
-primaryDfPreprocessed = primaryDf.dropna() 
+primaryDfPreprocessed = primaryDf.dropna().copy()
 
-primaryDfPreprocessed[['COR.LEVEL','COR.FLOW']] = StandardScaler(copy=False).fit_transform(primaryDfPreprocessed[['COR.LEVEL','COR.FLOW']])
+scaledCols = StandardScaler(copy=False).fit_transform(primaryDfPreprocessed.loc[:,('COR.LEVEL','COR.FLOW')])
+primaryDfPreprocessed.loc[:,('COR.LEVEL','COR.FLOW')] = scaledCols
+
 primaryDfPreprocessed.to_csv("total_primary_preprocessed.csv")
