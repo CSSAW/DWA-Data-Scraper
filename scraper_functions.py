@@ -6,7 +6,8 @@ import requests
 import sys
 import pandas as pd
 import io
-
+from datetime import datetime
+from datetime import timedelta
 # Necessary for pickle on soup objects
 sys.setrecursionlimit(100000)
 def documentDownloader(urlString, alwaysDownload=False, storeData=False,  dataPath="raw_data"):
@@ -50,28 +51,44 @@ def getStationData(stationInterfaceURL, alwaysDownload=False, storeData=False,  
     outputDict["station"] = stationInferface.find(id="tbStation").get("value")
     outputDict["river"] = stationInferface.find(id="labPlace").get_text().strip()
 
-    # The construction of the URL below was created by analysing the output of a form
-    stationDataURLPrimary = baseURL + "HyData.aspx?Station=" + stationInferface.find(id="tbStation").get("value") +stationInferface.find("input", {"name":"ctl05"}).get("value") \
-    + "&DataType=Point&StartDT=" + stationInferface.find("input", {"name":"ctl06"}).get("value") \
-    + "&EndDT=" + stationInferface.find("input", {"name":"tbEnd_0"}).get("value") \
-    + "&SiteType=" + stationInferface.find("input", {"name":"tbSiteType"}).get("value")
+    startDate = stationInferface.find("input", {"name":"ctl06"}).get("value")
+    # startYear = startDate.split('-')[0]
+    startDate = datetime.strptime(startDate, "%Y-%M-%d")
 
-    stationDataPrimary = documentDownloader(stationDataURLPrimary,alwaysDownload=alwaysDownload, storeData=storeData) 
-    # Remove any non-table items from the webPage. 
-    foundPre = stationDataPrimary.find("pre")
-    if foundPre != None:     
-        stationDataStrPrimary = foundPre.get_text()
-        substrStartKeyword = "Surface Water Level\n"
-        stationDataStrPrimary = stationDataStrPrimary[stationDataStrPrimary.find(substrStartKeyword)+len(substrStartKeyword):]
+    endDate = stationInferface.find("input", {"name":"tbEnd_0"}).get("value")
+    endDate = datetime.strptime(endDate, "%Y-%M-%d")
+    # # endYear = startDate.split('-')[0]
+    # endDate = startDate[endDate.index("-"):]
 
-        # Use a stringIo object to use the pandas read_fwf function. 
-        # This converts a pure text table with a bunch of columns to a pandas dataframe. 
-        strBuffer = io.StringIO(stationDataStrPrimary)
-        outputDict["dfPrimary"] = pd.read_fwf(strBuffer)
-        strBuffer.close()
-    else:
-        outputDict["dfPrimary"] = None
+    currentDate = startDate
+    outputDict["dfPrimary"] = None
     
+    while currentDate < endDate:
+        # The construction of the URL below was created by analysing the output of a form
+        stationDataURLPrimary = baseURL + "HyData.aspx?Station=" + stationInferface.find(id="tbStation").get("value") +stationInferface.find("input", {"name":"ctl05"}).get("value") \
+        + "&DataType=Point&StartDT=" + currentDate.strftime("%Y-%M-%d")\
+        + "&EndDT=" + (currentDate + timedelta(days=360)).strftime("%Y-%M-%d") \
+        + "&SiteType=" + stationInferface.find("input", {"name":"tbSiteType"}).get("value")
+
+        stationDataPrimary = documentDownloader(stationDataURLPrimary,alwaysDownload=alwaysDownload, storeData=storeData) 
+        # Remove any non-table items from the webPage. 
+        foundPre = stationDataPrimary.find("pre")
+        if foundPre != None:     
+            stationDataStrPrimary = foundPre.get_text()
+            substrStartKeyword = "Surface Water Level\n"
+            stationDataStrPrimary = stationDataStrPrimary[stationDataStrPrimary.find(substrStartKeyword)+len(substrStartKeyword):]
+            # Use a stringIo object to use the pandas read_fwf function. 
+            # This converts a pure text table with a bunch of columns to a pandas dataframe. 
+            strBuffer = io.StringIO(stationDataStrPrimary)
+            if type(outputDict["dfPrimary"]) == type(None):
+                outputDict["dfPrimary"] = pd.read_fwf(strBuffer)
+            else:
+                newDataFrame = pd.read_fwf(strBuffer)
+                outputDict["dfPrimary"] = outputDict["dfPrimary"].append(newDataFrame)
+
+            strBuffer.close()
+        currentDate += timedelta(days=360)
+
     # The construction of the URL below was created by analysing the output of a form 
     stationDataURLFlow = baseURL + "HyData.aspx?Station=" + stationInferface.find(id="tbStation").get("value") +stationInferface.find("input", {"name":"ctl05"}).get("value") \
     + "&DataType=Daily&StartDT=" + stationInferface.find("input", {"name":"ctl06"}).get("value") \
